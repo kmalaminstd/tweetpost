@@ -1,0 +1,6 @@
+// input must not have 250 words
+// 0/250 word count feature
+// on submit (validation)
+
+// 2nd feature 
+// generate time during tweet
