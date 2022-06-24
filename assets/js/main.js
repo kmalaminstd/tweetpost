@@ -25,22 +25,51 @@ function gettingTweetText(){
 
 function validInputs(textVal){
     if(textVal === ''){
-        alert('Write something')
+        return false;
+    }else{
+        return true;
     }
+
+    // countWord()
 }
 
 tweetSubBtn.addEventListener('click', function(e){
     e.preventDefault();
 
-    const id = tweetArr.length;
+    const id = tweetArr.length+1;
 
     tweetCountElm.textContent = 0;
     const tweetText = gettingTweetText();
     // console.log(tweetText)
 
-    validInputs(tweetText);
+    let date = new Date().toDateString();
 
-    resetTweetText();
+    // console.log(date);
+
+
+    const valInput = validInputs(tweetText);
+
+    const createTweet = {
+        id : id,
+        post : tweetText,
+        time : date
+    }
+
+    if(valInput){
+        tweetArr.push(createTweet)
+
+        resetTweetText();
+        listingTweets(id, tweetText, date);
+        showFilterItem(tweetArr);
+
+        storeDataLocalStorage(createTweet);
+    }
+
+    
+
+    // console.log(tweetArr);
+
+    
 
     // console.log(tweetArr);
 
@@ -54,27 +83,14 @@ tweetSubBtn.addEventListener('click', function(e){
 
     // let postTime =  newdate;
 
-    let date = new Date().toDateString();
+    
 
     // let currDate = date.toLocaleString();
     // console.log(typeof currDate)
 
     // console.log(postTime);
 
-    tweetArr.push({
-        id : id,
-        post : tweetText,
-        time : date
-    })
-
-
-    listingTweets(id, tweetText, date);
-
-    console.log(tweetArr);
-
-    showFilterItem(tweetArr);
-
-    storeDataLocalStorage(tweetArr);
+    
 
 })
 
@@ -85,7 +101,7 @@ function countWord(){
 
     tweetCountElm.textContent = tweetWordLength;
 
-    if(tweetWordLength > 250 ){
+    if(tweetWordLength > 5 ){
         alert('Word Limit reached');
     }
 }
@@ -99,11 +115,6 @@ tweetpostElm.addEventListener('keyup', function(e){
 // console.log(tweetTextArr.length)
 
 function listingTweets(id, post, postTime){
-
-    // console.log(postTime);
-
-    // console.log(tweet)
-
 
             let tweetElm =
         `
@@ -130,12 +141,13 @@ tweetSearchElm.addEventListener('keyup', e => {
 function showFilterItem(fillterItem){
     orderedTwitterlistElm.innerHTML = '';
     fillterItem.forEach(element => {
+        // console.log(element);
         let tweetElm =
         `
         <li class="item-${element.id}">${element.post}
         <br>
         <br>
-        <p class="postTime"><b><i>${element.currDate}</i></b></p>
+        <p class="postTime"><b><i>${element.time}</i></b></p>
         <br>
         <button class="dlt-btn">Delete</button>
         </li>
@@ -177,24 +189,67 @@ function getItemId(itemId){
     // console.log(liElm);
 }
 
+function showItemtoUi(element){
+    fillterItem.forEach(element => {
+        let tweetElm =
+        `
+        <li class="item-${element.id}">${element.post}
+        <br>
+        <br>
+        <p class="postTime"><b><i>${element.currDate}</i></b></p>
+        <br>
+        <button class="dlt-btn">Delete</button>
+        </li>
+        `
+
+        orderedTwitterlistElm.insertAdjacentHTML('beforeend', tweetElm)
+    });
+}
+
 // store data in localStorage
 
 function storeDataLocalStorage(tweet){
-    let tweets;
-    if(!localStorage.getItem('posts')){
-        
-        tweets = tweet;
-        
-        // console.log(tweets);
-        localStorage.setItem('posts', JSON.stringify(tweets))
+
+    // console.log(typeof(tweet));
+
+    if(typeof tweet === 'object' && Array.isArray(tweet)){
+        console.log('Array found')
     }else{
-        tweets = JSON.parse(localStorage.getItem('posts'));
-        tweets.push(tweet)
-        localStorage.setItem('posts', JSON.stringify(tweets));
-        // tweets.push(tweet);
+        console.log('Not found');
     }
+
+    // if(tweet.length === 0){
+    //     console.log('Emply array');
+    // }
+
+    let localTweet = [];
+
+    if(localStorage.getItem('storeTweets')){
+        localTweet = JSON.parse(localStorage.getItem('storeTweets'));
+        localTweet.push(tweet)
+
+        localStorage.setItem('storeTweets', JSON.stringify(localTweet))
+    }else{
+        localTweet = [];
+
+        localTweet.push(tweet);
+        
+        localStorage.setItem('storeTweets', JSON.stringify(localTweet))
+    }
+   
     
 }
 
-const time = document.querySelector('.time');
-time.textContent = new Date().toDateString();
+document.addEventListener('DOMContentLoaded', function(e){
+    if(localStorage.getItem('storeTweets')){
+        const localTweet = JSON.parse(localStorage.getItem('storeTweets'));
+        for(let i = 0; i < localTweet; i++){
+            console.log(localTweet[i]);
+        }
+        // console.log(tweetDetail);
+        showFilterItem(localTweet);
+    }
+})
+
+// const time = document.querySelector('.time');
+// time.textContent = new Date().toDateString();
