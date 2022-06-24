@@ -165,15 +165,20 @@ orderedTwitterlistElm.addEventListener('click', e => {
     let id = getItemId(e.target);
     removeTweetFromList(id);
     removeTweetFromArr(id);
+    deleteTweetFromLocalStorag(id);
 
     // console.log(tweetArr)
     
 })
 
+function updateAfterRemoveTweet(id){
+    return tweetArr.filter( elm => elm.id !== id);
+}
+
 function removeTweetFromArr(id){
-    let filterTweet = tweetArr.filter( elm => elm.id !== id);
+    let filterTweet = updateAfterRemoveTweet(id);
     tweetArr = filterTweet;
-    console.log(tweetArr);
+    // console.log(tweetArr);
 }
 
 function removeTweetFromList(id){
@@ -250,6 +255,15 @@ document.addEventListener('DOMContentLoaded', function(e){
         showFilterItem(localTweet);
     }
 })
+
+function deleteTweetFromLocalStorag(id){
+    const fullTweetDet = localStorage.getItem('storeTweets');
+    console.log(fullTweetDet);
+    const tweetAfterRemove = updateAfterRemoveTweet(id, fullTweetDet);
+
+    console.log(tweetAfterRemove);
+    localStorage.setItem('storeTweets', JSON.stringify(tweetAfterRemove));
+}
 
 // const time = document.querySelector('.time');
 // time.textContent = new Date().toDateString();
