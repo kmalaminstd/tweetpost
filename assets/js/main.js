@@ -13,7 +13,7 @@ let tweetArr = [];
 let tweetWordArr = 0;
 let itemId;
 
-const date = new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', hour12: true });
+let date = new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', hour12: true });
 
 console.log(date);
 
@@ -217,6 +217,8 @@ tweetPostBoxElm.addEventListener('click', function(e){
         const tweetText = gettingTweetText();
         resetTweetText();
         tweetSubBtn.style.display = "block";
+
+        date = new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', hour12: true });
 
         validInputs(tweetText);
 
