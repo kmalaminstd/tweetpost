@@ -31,12 +31,12 @@ input{
     margin-top: 8px;
 }
 
-input[type="submit"]{
+input[type="submit"], input[type="button"]{
     margin-top: 15px;
     cursor: pointer;
 }
 
-input[type="submit"]:hover{
+input[type="submit"]:hover, input[type="button"]:hover{
     background-color: aqua;
     transform: 0.5s ease;
     -webkit-transform: 0.5s ease;

@@ -1,3 +1,4 @@
+const tweetPostBoxElm = document.querySelector('.tweetPost');
 const tweetpostElm = document.querySelector('.tweetPost input[type="text"]');
 const tweetSubBtn = document.querySelector('.tweetPost [type="submit"]');
 const tweetCountElm = document.querySelector('.countHere');
@@ -10,6 +11,14 @@ const deleteBtn = document.querySelector('.dlt-btn');
 
 let tweetArr = [];
 let tweetWordArr = 0;
+let itemId;
+
+function updateLocalStorage(){
+    if(localStorage.getItem('storeTweets')){
+        localStorage.setItem('storeTweets', JSON.stringify(tweetArr));
+    }
+}
+
 
 function resetTweetText(){
     tweetpostElm.value = '';
@@ -25,6 +34,7 @@ function gettingTweetText(){
 
 function validInputs(textVal){
     if(textVal === ''){
+        alert('Write something')
         return false;
     }else{
         return true;
@@ -150,6 +160,7 @@ function showFilterItem(fillterItem){
         <p class="postTime"><b><i>${element.time}</i></b></p>
         <br>
         <button class="dlt-btn">Delete</button>
+        <button class="edt-btn">Edit</button>
         </li>
         `
 
@@ -159,17 +170,90 @@ function showFilterItem(fillterItem){
 
 
 orderedTwitterlistElm.addEventListener('click', e => {
+    
     if(e.target.classList.contains('dlt-btn')){
-        
-    }
-    let id = getItemId(e.target);
-    removeTweetFromList(id);
-    removeTweetFromArr(id);
-    deleteTweetFromLocalStorag(id);
+        let id = getItemId(e.target);
+        removeTweetFromList(id);
+        removeTweetFromArr(id);
+        deleteTweetFromLocalStorag(id);
+    }else if(e.target.classList.contains('edt-btn')){
+        // console.log('Edit butn');
+        itemId = getItemId(e.target);
+        const foundTweet = tweetArr.find( tweets => {
+            if(tweets.id === itemId){
+                return tweets.post;
+            }
+        });
 
-    // console.log(tweetArr)
+        populateUiInEdit(foundTweet);
+
+        if(!document.querySelector('.updateBtn')){
+            showUpdateBtn();
+        }
+
+        
+       
+    }   
+    // console.log(tweetArr)   
+})
+
+function showUpdateBtn(){
+    const editBtnElem = `<input class="updateBtn" type="button" value="UPDATE">`
+
+    tweetSubBtn.style.display = "none";
+
+    tweetPostBoxElm.insertAdjacentHTML('beforeend', editBtnElem);
+}
+
+tweetPostBoxElm.addEventListener('click', function(e){
+
+    let date = new Date().toDateString();
+
+    if(e.target.classList.contains('updateBtn')){
+        const tweetText = gettingTweetText();
+        resetTweetText();
+        tweetSubBtn.style.display = "block";
+
+        validInputs(tweetText);
+
+        tweetArr = tweetArr.map( tweet => {
+            if(tweet.id === itemId){
+                // console.log({
+                //     id : tweet.id,
+                //     post : tweetText,
+                //     time : date
+                // });
+                return {
+                    id : tweet.id,
+                    post : tweetText,
+                    time : date
+                }
+            }else{
+                // console.log(tweet);
+                return tweet;
+            }
+        })
+
+        showFilterItem(tweetArr);
+
+        document.querySelector('.updateBtn').remove();
+
+        // console.log(updatedTweetArr);
+
+        updateLocalStorage();
+    }
+
+    
+
     
 })
+
+
+
+function populateUiInEdit(tweet){
+    tweetpostElm.value = tweet.post;
+    // console.log(tweet);
+}
 
 function updateAfterRemoveTweet(id){
     return tweetArr.filter( elm => elm.id !== id);
@@ -204,6 +288,7 @@ function showItemtoUi(element){
         <p class="postTime"><b><i>${element.currDate}</i></b></p>
         <br>
         <button class="dlt-btn">Delete</button>
+        <button class="edt-btn">Edit</button>
         </li>
         `
 
@@ -217,11 +302,11 @@ function storeDataLocalStorage(tweet){
 
     // console.log(typeof(tweet));
 
-    if(typeof tweet === 'object' && Array.isArray(tweet)){
-        console.log('Array found')
-    }else{
-        console.log('Not found');
-    }
+    // if(typeof tweet === 'object' && Array.isArray(tweet)){
+    //     console.log('Array found')
+    // }else{
+    //     console.log('Not found');
+    // }
 
     // if(tweet.length === 0){
     //     console.log('Emply array');
@@ -247,12 +332,12 @@ function storeDataLocalStorage(tweet){
 
 document.addEventListener('DOMContentLoaded', function(e){
     if(localStorage.getItem('storeTweets')){
-        const localTweet = JSON.parse(localStorage.getItem('storeTweets'));
-        for(let i = 0; i < localTweet; i++){
-            console.log(localTweet[i]);
-        }
+        tweetArr = JSON.parse(localStorage.getItem('storeTweets'));
+        // for(let i = 0; i < localTweet; i++){
+        //     console.log(localTweet[i]);
+        // }
         // console.log(tweetDetail);
-        showFilterItem(localTweet);
+        showFilterItem(tweetArr);
     }
 })
 
