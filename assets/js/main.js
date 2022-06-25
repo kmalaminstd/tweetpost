@@ -13,6 +13,10 @@ let tweetArr = [];
 let tweetWordArr = 0;
 let itemId;
 
+const date = new Date().toLocaleString({ hour: 'numeric', minute: 'numeric', hour12: true });
+
+console.log(date);
+
 function updateLocalStorage(){
     if(localStorage.getItem('storeTweets')){
         localStorage.setItem('storeTweets', JSON.stringify(tweetArr));
@@ -52,7 +56,7 @@ tweetSubBtn.addEventListener('click', function(e){
     const tweetText = gettingTweetText();
     // console.log(tweetText)
 
-    let date = new Date().toDateString();
+    // let date = new Date().toDateString();
 
     // console.log(date);
 
@@ -207,7 +211,7 @@ function showUpdateBtn(){
 
 tweetPostBoxElm.addEventListener('click', function(e){
 
-    let date = new Date().toDateString();
+    // let date = new Date().toDateString();
 
     if(e.target.classList.contains('updateBtn')){
         const tweetText = gettingTweetText();
@@ -226,7 +230,7 @@ tweetPostBoxElm.addEventListener('click', function(e){
                 return {
                     id : tweet.id,
                     post : tweetText,
-                    time : date
+                    time : 'Post updated in : ' + date
                 }
             }else{
                 // console.log(tweet);
@@ -285,7 +289,7 @@ function showItemtoUi(element){
         <li class="item-${element.id}">${element.post}
         <br>
         <br>
-        <p class="postTime"><b><i>${element.currDate}</i></b></p>
+        <p class="postTime"><b><i>${element.time}</i></b></p>
         <br>
         <button class="dlt-btn">Delete</button>
         <button class="edt-btn">Edit</button>
