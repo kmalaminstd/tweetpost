@@ -115,7 +115,7 @@ function countWord(){
 
     tweetCountElm.textContent = tweetWordLength;
 
-    if(tweetWordLength > 5 ){
+    if(tweetWordLength > 250 ){
         alert('Word Limit reached');
     }
 }
